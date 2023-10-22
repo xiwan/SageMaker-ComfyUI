@@ -7,7 +7,8 @@ Metadata:
           default: Required SageMaker Parameters
         Parameters:
           - NotebookInstanceName
-          - NotebookInstanceType
+          - DefaultCodeRepository
+          - SageMakerComfyUIRepo
           - SageMakerRoleArn
           - VolumeSizeInGB
     ParameterLabels:
@@ -17,6 +18,8 @@ Metadata:
         default: Notebook Instance Type
       SageMakerRoleArn:
         default: SageMaker IAM Role
+      DefaultCodeRepository:
+        default: Github repo url
 Parameters:
   NotebookInstanceName:
     AllowedPattern: '[A-Za-z0-9-]{1,63}'
@@ -44,6 +47,10 @@ Parameters:
     Description: ARN of the SageMaker IAM execution role. If you don't specify a role, a new role is created with AmazonSageMakerFullAccess managed policy and access is provided to SageMakerS3Bucket, if provided.
     Type: String
     Default: ''
+  DefaultCodeRepository:
+    Description: The source code repo
+    Type: String
+    Default: 'https://github.com/xiwan/SageMaker-ComfyUI'
 
 Resources:
   SageMakerExecutionRole: 
@@ -78,7 +85,7 @@ Resources:
     Type: AWS::SageMaker::NotebookInstance
     Properties:
       InstanceType: !Ref NotebookInstanceType
-      #DefaultCodeRepository: !Ref DefaultCodeRepository
+      DefaultCodeRepository: !Ref DefaultCodeRepository
       #LifecycleConfigName: !GetAtt LifeCycleConfig.NotebookInstanceLifecycleConfigName
       NotebookInstanceName: !Ref NotebookInstanceName
       RoleArn: !GetAtt SageMakerExecutionRole.Arn

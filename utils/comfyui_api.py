@@ -6,7 +6,8 @@ import urllib.request
 import urllib.parse
 import random
 
-WORKING_DIR='/home/ec2-user/SageMaker'
+WORKING_DIR='/home/ec2-user/SageMaker/SageMaker-ComfyUI'
+SageMaker_ComfyUI = WORKING_DIR + '/SageMaker_ComfyUI'
 WORKFLOW_FILE='workflow_api_txt2gif.json'
 COMFYUI_ENDPOINT='127.0.0.1:8188'
 
@@ -73,7 +74,7 @@ def get_images(ws, prompt):
     return output_images
 
 def parse_worflow(ws, prompt, seed):
-    workflowfile = '{}/workflows/{}'.format(WORKING_DIR, WORKFLOW_FILE)
+    workflowfile = '{}/workflows/{}'.format(SageMaker_ComfyUI, WORKFLOW_FILE)
     print(workflowfile)
     with open(workflowfile, 'r', encoding="utf-8") as workflow_api_txt2gif_file:
         prompt_data = json.load(workflow_api_txt2gif_file)
