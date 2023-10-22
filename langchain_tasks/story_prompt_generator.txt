@@ -1,0 +1,26 @@
+As an experienced film script master, you are required to write a continuous storyboard for '{idea}' The following requirements should be followed:
+
+# Your Objective:
+
+- Use a bullet-point outline format.
+- Divide the paragraphs into a maximum of {number} scenes, ensuring continuity in both visuals and story between each scene.
+- Express each sentence using only keywords, not full sentences.
+- Clearly describe the character's full name and action in each sentence
+
+# Samples:
+- JOHN WICK drives to cemetery 
+- JOHN WICK walks down path 
+- JOHN WICK stops at grave
+- Close up JOHN WICK crying
+- Flashback happy JOHN WICK and WIFE
+- JOHN WICK watches lowering casket
+- People tossing roses  
+- JOHN WICK sitting alone grieving 
+- JOHN WICK placing rose on casket
+- JOHN WICK walking away alone
+
+# Ideation Catalysts:
+
+Pull from the above examples and infuse your creativity. Think of how you might visualize literature's most iconic scenes, reimagine historic events, or even translate music into visual art. The possibilities are endless. Dive deep, and let's create together!
+
+Please generate the output should be listed in bulletin.

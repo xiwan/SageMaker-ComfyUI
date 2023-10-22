@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Custom resource to create a SageMaker notebook. License: (MIT-0: https://github.com/aws/mit-0) (qs-1o9abmj8n)'
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Required SageMaker Parameters
+        Parameters:
+          - NotebookInstanceName
+          - NotebookInstanceType
+          - SageMakerRoleArn
+          - VolumeSizeInGB
+    ParameterLabels:
+      NotebookInstanceName:
+        default: Notebook Instance Name
+      NotebookInstanceType:
+        default: Notebook Instance Type
+      SageMakerRoleArn:
+        default: SageMaker IAM Role
+Parameters:
+  NotebookInstanceName:
+    AllowedPattern: '[A-Za-z0-9-]{1,63}'
+    ConstraintDescription: Maximum of 63 alphanumeric characters. Can include hyphens
+      (-), but not spaces. Must be unique within your account in an AWS Region.
+    Description: SageMaker Notebook instance name
+    MaxLength: '63'
+    MinLength: '1'
+    Type: String
+  NotebookInstanceType:
+    AllowedValues:
+      - ml.g5.xlarge
+      - ml.g5.2xlarge
+      - ml.g4dn.xlarge
+      - ml.g4dn.2xlarge
+    ConstraintDescription: Must select a valid notebook instance type.
+    Default: ml.g5.2xlarge
+    Description: Select Instance type for the SageMaker Notebook
+    Type: String
+  VolumeSizeInGB:
+    Type: String
+    Description: Enter number of volume size(GB)
+    Default: 300
+  SageMakerRoleArn:
+    Description: ARN of the SageMaker IAM execution role. If you don't specify a role, a new role is created with AmazonSageMakerFullAccess managed policy and access is provided to SageMakerS3Bucket, if provided.
+    Type: String
+    Default: ''
+
+Resources:
+  SageMakerExecutionRole: 
+    Type: "AWS::IAM::Role"
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+        - 
+          Effect: "Allow"
+          Principal: 
+            Service: 
+              - "sagemaker.amazonaws.com"
+              - "bedrock.amazonaws.com"
+          Action: 
+          - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
+      Policies:
+        - PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - bedrock:*
+                Effect: Allow
+                Resource:
+                  - "*"
+          PolicyName: bedrockFullAccess
+
+  NotebookInstance:
+    Type: AWS::SageMaker::NotebookInstance
+    Properties:
+      InstanceType: !Ref NotebookInstanceType
+      #DefaultCodeRepository: !Ref DefaultCodeRepository
+      #LifecycleConfigName: !GetAtt LifeCycleConfig.NotebookInstanceLifecycleConfigName
+      NotebookInstanceName: !Ref NotebookInstanceName
+      RoleArn: !GetAtt SageMakerExecutionRole.Arn
+      VolumeSizeInGB: !Ref VolumeSizeInGB
+      Tags:
+        - Key: "Managed"
+          Value: "cloudformation"
+Outputs:
+  NotebookURL:
+    Description: SageMaker Notebook Instance URL.
+    Value: !Join
+        - ''
+        - - https://
+          - !Ref 'AWS::Region'
+          - .console.aws.amazon.com/sagemaker/home?region=
+          - !Ref 'AWS::Region'
+          - '#/notebook-instances/openNotebook/'
+          - !GetAtt 'NotebookInstance.NotebookInstanceName'
+          - '?view=lab'
